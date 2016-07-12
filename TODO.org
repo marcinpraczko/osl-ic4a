@@ -1,0 +1,13 @@
+* Version 0.1.0 (Unreleased)
+** DONE Add interactive initial shell
+** DONE Add Banners (Like DAC)
+** DONE Add argparse commands - initial working version
+** Add logger functions
+
+* General list
+** Add proper commnads for argparse - to do right things
+** Add CHANGELOG
+** Add VERSION
+** Add Makefile (if required)
+** Add Checking required files in projects
+** Sort ic4a.py with proper name/strucutre (like ansible as example)
