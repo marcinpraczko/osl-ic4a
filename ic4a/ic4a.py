@@ -11,7 +11,7 @@ import sys
 import ic4amain
 
 if __name__ == '__main__':
-    IC4A = ic4amain.IC4A()
+    IC4A = ic4amain.IC4A(sys.argv[0])
 
     if len(sys.argv) > 1:
         IC4A.non_interactive()
