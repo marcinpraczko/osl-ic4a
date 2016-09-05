@@ -1,37 +1,49 @@
 # -*- coding: utf-8 -*-
 
+"""
+This is main module for IC4A
+"""
+
+import os
+import sys
 import argparse
 import textwrap
 
-# TODO: Add displaying help from interactive
+
 # TODO: Add help for commands - is not suppored yet
+#       Example ic4a.py command -h
 
 class IC4A(object):
     """
-    Main IC4A (Interactive Console For Automation
+    Main IC4A (Interactive Console For Automation)
     """
 
     def __init__(self, progname):
+        self.APPNAME = "ic4a"
+
+        self.interactive_mode = False
         self.version = "0.1"
         self.release = "0.1.0"
         self.console_prompt = "ic4a_console> "
-        # TODO: Change this dict to main keys as 'cmd_XXX' and add attribute 'cmd'
-        #       This will allow add aliases and compare command easier in code instead of hardcoded
+        self.homedir = os.path.expanduser("~")
+        self.home_appdir = os.path.join(self.homedir, ".{0}".format(self.APPNAME))
+        # NOTE: http://programmers.stackexchange.com/questions/182093/why-store-a-function-inside-a-python-dictionary
+        # NOTE: http://stackoverflow.com/questions/9168340/python-using-a-dictionary-to-select-function-to-execute
         self.main_commands = {
             'cmd_help': {
                 'cmd': 'help',
                 'help': 'Display help in interactive section',
-                'run': None
+                'run': self.command_help
             },
             'cmd_exit': {
                 'cmd': 'exit',
                 'help': 'Exit from interactive console',
-                'run': None
+                'run': self.command_exit
             },
             'cmd_init': {
                 'cmd': 'init',
                 'help': '(To Be Develop) Initial configuration',
-                'run': None
+                'run': self.command_init
             },
             'cmd_check': {
                 'cmd': 'check',
@@ -52,7 +64,8 @@ class IC4A(object):
                 '''For help on any individual command run `%(prog)s COMMAND -h`'''
             ),
             description=textwrap.dedent(
-                self.format_main_commands_short_help(interactive_mode=False))
+                self.format_main_commands_short_help()
+            )
         )
 
     def banner(self):
@@ -82,42 +95,81 @@ class IC4A(object):
         print ""
         print ""
 
-    def format_main_commands_short_help(self, interactive_mode=True):
+    def format_main_commands_short_help(self):
         """Format main commands short help"""
-        help=""
-        if not interactive_mode:
-            help += "IC4A - Interactive Console For Automation\n\n"
-        help += "Common commands:\n"
+        help_info = ""
+        if not self.interactive_mode:
+            help_info += "IC4A - Interactive Console For Automation\n\n"
+        help_info += "Common commands:\n"
         for key, value in self.main_commands.iteritems():
             # Do not display help when
-            if not interactive_mode and key in [ 'cmd_help', 'cmd_exit']:
+            if not self.interactive_mode and key in [ 'cmd_help', 'cmd_exit']:
                 continue
-            help += "  {0:<14}    {1:}\n".format(value['cmd'], value['help'])
-        help += "\n"
-        return help
+            help_info += "  {0:<14}    {1:}\n".format(value['cmd'], value['help'])
+        help_info += "\n"
+        return help_info
 
-    def parse_arguments(self):
+    def command_help(self, args=None):
+        """Display help"""
+        print self.format_main_commands_short_help()
+
+    def command_init(self, args=None):
+        """Initial setup for IC4A"""
+        print "INFO:"
+        print "APPDIR: {0}".format(self.home_appdir)
+        print "TODO - this should be implemented - Create required folder and files in home directory"
+
+    def command_exit(self, args=None):
+        """Exit from application"""
+        if self.interactive_mode:
+            print "Exiting from console - See you soon :) ..."
+            print ""
+        sys.exit(0)
+
+    def run_commands(self, args=None):
+        """
+        This function runs command based on input
+
+        :param args: 'ArgParse Namespace' from not-interactive mode or 'List' from interactive mode
+        """
+        if self.interactive_mode:
+            command = args[0]
+        else:
+            command = args.main_command
+
+        command_exists = False
+        for key, value in self.main_commands.iteritems():
+            if command == value['cmd']:
+                command_exists = True
+                if value['run']:
+                    # TODO: Add passing arguments here for commands
+                    # NOTE: run function from dict with arguments (so far no ARGS: None)
+                    value['run'](None)
+                else:
+                    msg = "[{0}]: {1}".format(value['cmd'], value['help'])
+                    print "Only INFO: {0}".format(msg)
+
+        if not command_exists:
+            print "\nERROR: Unknown command: {0}\n".format(command)
+
+        if not self.interactive_mode:
+            sys.exit(2)
+
+    def parse_cmdline_arguments(self):
         """
         Parse arguments with subcommands
-
         Taken from examples: http://stackoverflow.com/questions/6394328/only-one-command-line-option-with-argparse
         """
-        # TODO: Have multi commands options - like: git <cmd>, vagrant <cmd>
 
+        # NOTE: Have multi commands options - like: git <cmd>, vagrant <cmd>
         self.parser_main.add_argument('main_command', help=argparse.SUPPRESS)
         args = self.parser_main.parse_args()
+        self.run_commands(args)
 
-        # TODO: This is temporary - find different solution
-        for key, value in self.main_commands.iteritems():
-            if args.main_command == value['cmd']:
-                msg = "[{0}]: {1}".format(value['cmd'], value['help'])
-                self.run_commands(msg)
-
-    def run_commands(self, command):
-        print "Run command: {0}".format(command)
-
-    # TODO: This function should be connected with parse_arguments - somehow - to use the same code
     def read_user_commands(self):
+        """
+        Read and parse user commands (from interactive mode)
+        """
         while True:
             user_command = raw_input(self.console_prompt)
             user_command = user_command.strip().split()
@@ -126,24 +178,16 @@ class IC4A(object):
             if not user_command:
                 continue
 
-            # Run command
-            if user_command[0] == self.main_commands['cmd_help']['cmd']:
-                help = self.format_main_commands_short_help(interactive_mode=True)
-                print "{0}".format(help)
-            elif user_command[0] == self.main_commands['cmd_exit']['cmd']:
-                print "Exiting from console - See you soon :) ..."
-                print ""
-                break
-            else:
-                print "ERROR: Unknown command"
+            self.run_commands(user_command)
 
     def interactive(self):
         """Interactive session"""
 
+        self.interactive_mode = True
         self.banner()
         self.read_user_commands()
 
     def non_interactive(self):
         """Not interactive session"""
 
-        self.parse_arguments()
+        self.parse_cmdline_arguments()

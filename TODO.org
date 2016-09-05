@@ -1,8 +1,11 @@
 * Version 0.1.1 (Unreleased)
 ** Add logger functions
 
-
 * Version 0.1.0 (Unreleased)
+** TODO Add requirements.txt
+** TODO Add README.rst
+   - [ ] Add details how to setup virtualenv
+   - [ ] Add details how to setup virtualenv in PyCharm
 ** TODO Add 'init' target
 *** TODO Create folder in HOME
 *** TODO Create basic shell script (and run)
@@ -13,15 +16,20 @@
 ** DONE Add argparse commands - initial working version
 
 * General list
-** Add proper commnads for argparse - to do right things
+** DONE Add proper commands for argparse - to do right things
    - This is almost done - basic commands can be run now
+   - Initial solution is implemented
 ** Add CHANGELOG
 ** Add VERSION
 ** Add Makefile (if required)
 ** Add Checking required files in projects (pip requirements)
+** Add unittesting and application testing
+   - Application testing (Vagrant / docker)
+   - Unitest - python
 ** Sort ic4a.py with proper name/strucutre (like ansible as example)
 
 * Consider to use
 
 ** Python modules
    - [[https://github.com/neithere/argh][Additional module for argparse]]
+     NOTE: Looks like so far I've done what is expected in normal argparse module.
