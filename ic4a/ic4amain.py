@@ -26,9 +26,15 @@ class IC4A(object):
         self.version = "0.1"
         self.release = "0.1.0"
         self.console_prompt = "ic4a_console> "
+
+        # TODO: Make sure that valid path is implemented when code is running from python package
+        # TODO: On OSX seems that absolute path = relative
+        self.appdir = os.path.dirname(__file__)
+        self.ic4a_scripts = self.__ic4a_scripts__()
+
         self.homedir = os.path.expanduser("~")
         self.home_appdir = os.path.join(self.homedir, ".{0}".format(self.APPNAME))
-        self.appdirs = self.__appdirs__()
+        self.home_workspace_dirs = self.__home_appdirs__()
         # NOTE: http://programmers.stackexchange.com/questions/182093/why-store-a-function-inside-a-python-dictionary
         # NOTE: http://stackoverflow.com/questions/9168340/python-using-a-dictionary-to-select-function-to-execute
         self.main_commands = {
@@ -115,10 +121,20 @@ class IC4A(object):
         """Display help"""
         print self.format_main_commands_short_help()
 
-    def __appdirs__(self):
+    def __home_appdirs__(self):
         """Directories which will be created in IC4A config folder"""
-        appdirs = [ 'download', 'tmp' ]
-        return appdirs
+        dirs = [ 'download', 'tmp' ]
+        return dirs
+
+    def __ic4a_scripts__(self):
+        """Directories which IC4A has build in"""
+        scripts = {
+            'jobs': {
+                'ic4a_init_shell_boilr_install':
+                    os.path.join(self.appdir, "..", "jobs/ic4a_init/shell/boilr_install.sh")
+            }
+        }
+        return scripts
 
     # TODO: Move this to another class with this kind of methos (for example utils)
     def os_create_directory(self, path):
@@ -132,9 +148,15 @@ class IC4A(object):
         """Initial setup for IC4A"""
         print "Creating initial folder if not exists: {0}".format(self.home_appdir)
         self.os_create_directory(self.home_appdir)
-        for dir in self.appdirs:
+        for dir in self.home_workspace_dirs:
             appdir = os.path.join(self.home_appdir, dir)
             self.os_create_directory(appdir)
+
+        # TODO: Replace this to run automatically
+        print "Running script for installing boilr"
+        print "TODO: Please run this script manually (so far)"
+        print "Run script:"
+        print "  {0}".format(self.ic4a_scripts['jobs']['ic4a_init_shell_boilr_install'])
 
     def command_exit(self, args=None):
         """Exit from application"""
