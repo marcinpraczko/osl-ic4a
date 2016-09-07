@@ -7,7 +7,7 @@
    - [ ] Add details how to setup virtualenv
    - [ ] Add details how to setup virtualenv in PyCharm
 ** TODO Add 'init' target
-*** TODO Create folder in HOME
+*** DONE Create folder in HOME
 *** TODO Create basic shell script (and run)
     - [ ] Download boilr for templates
     - [ ] Download ansible

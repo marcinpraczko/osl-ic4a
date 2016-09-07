@@ -9,6 +9,7 @@ import sys
 import argparse
 import textwrap
 
+import errno
 
 # TODO: Add help for commands - is not suppored yet
 #       Example ic4a.py command -h
@@ -113,11 +114,18 @@ class IC4A(object):
         """Display help"""
         print self.format_main_commands_short_help()
 
+    # TODO: Move this to another class with this kind of methos (for example utils)
+    def os_create_directory(self, path):
+        try:
+            os.makedirs(path)
+        except OSError as exception:
+            if exception.errno != errno.EEXIST:
+                raise
+
     def command_init(self, args=None):
         """Initial setup for IC4A"""
-        print "INFO:"
-        print "APPDIR: {0}".format(self.home_appdir)
-        print "TODO - this should be implemented - Create required folder and files in home directory"
+        print "Creating initial folder if not exists: {0}".format(self.home_appdir)
+        self.os_create_directory(self.home_appdir)
 
     def command_exit(self, args=None):
         """Exit from application"""
