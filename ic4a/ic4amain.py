@@ -28,6 +28,7 @@ class IC4A(object):
         self.console_prompt = "ic4a_console> "
         self.homedir = os.path.expanduser("~")
         self.home_appdir = os.path.join(self.homedir, ".{0}".format(self.APPNAME))
+        self.appdirs = self.__appdirs__()
         # NOTE: http://programmers.stackexchange.com/questions/182093/why-store-a-function-inside-a-python-dictionary
         # NOTE: http://stackoverflow.com/questions/9168340/python-using-a-dictionary-to-select-function-to-execute
         self.main_commands = {
@@ -114,6 +115,11 @@ class IC4A(object):
         """Display help"""
         print self.format_main_commands_short_help()
 
+    def __appdirs__(self):
+        """Directories which will be created in IC4A config folder"""
+        appdirs = [ 'download', 'tmp' ]
+        return appdirs
+
     # TODO: Move this to another class with this kind of methos (for example utils)
     def os_create_directory(self, path):
         try:
@@ -126,6 +132,9 @@ class IC4A(object):
         """Initial setup for IC4A"""
         print "Creating initial folder if not exists: {0}".format(self.home_appdir)
         self.os_create_directory(self.home_appdir)
+        for dir in self.appdirs:
+            appdir = os.path.join(self.home_appdir, dir)
+            self.os_create_directory(appdir)
 
     def command_exit(self, args=None):
         """Exit from application"""
