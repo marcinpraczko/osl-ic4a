@@ -8,6 +8,7 @@ import os
 import sys
 import argparse
 import textwrap
+import subprocess
 
 import errno
 
@@ -50,7 +51,7 @@ class IC4A(object):
             },
             'cmd_init': {
                 'cmd': 'init',
-                'help': '(To Be Develop) Initial configuration',
+                'help': '(WIP: Under development) Initial configuration',
                 'run': self.command_init
             },
             'cmd_check': {
@@ -144,6 +145,13 @@ class IC4A(object):
             if exception.errno != errno.EEXIST:
                 raise
 
+    # TODO: Move this to another class whcih this kind of actions (for example utils)
+    # TODO: From some reason return from wget is display faster then message about download (run init to see)
+    def os_run_command(self, command):
+        p = subprocess.Popen(command, stdout=subprocess.PIPE, shell=True)
+        (output, err) = p.communicate()
+        print "{0}".format(output)
+
     def command_init(self, args=None):
         """Initial setup for IC4A"""
         print "Creating initial folder if not exists: {0}".format(self.home_appdir)
@@ -152,11 +160,11 @@ class IC4A(object):
             appdir = os.path.join(self.home_appdir, dir)
             self.os_create_directory(appdir)
 
-        # TODO: Replace this to run automatically
         print "Running script for installing boilr"
-        print "TODO: Please run this script manually (so far)"
-        print "Run script:"
+        print "Script:"
         print "  {0}".format(self.ic4a_scripts['jobs']['ic4a_init_shell_boilr_install'])
+        print ""
+        self.os_run_command(self.ic4a_scripts['jobs']['ic4a_init_shell_boilr_install'])
 
     def command_exit(self, args=None):
         """Exit from application"""
