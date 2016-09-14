@@ -8,9 +8,9 @@ import os
 import sys
 import argparse
 import textwrap
-import subprocess
 
-import errno
+# IC4A modules
+import ic4autils
 
 # TODO: Add help for commands - is not suppored yet
 #       Example ic4a.py command -h
@@ -137,34 +137,21 @@ class IC4A(object):
         }
         return scripts
 
-    # TODO: Move this to another class with this kind of methos (for example utils)
-    def os_create_directory(self, path):
-        try:
-            os.makedirs(path)
-        except OSError as exception:
-            if exception.errno != errno.EEXIST:
-                raise
-
-    # TODO: Move this to another class whcih this kind of actions (for example utils)
-    # TODO: From some reason return from wget is display faster then message about download (run init to see)
-    def os_run_command(self, command):
-        p = subprocess.Popen(command, stdout=subprocess.PIPE, shell=True)
-        (output, err) = p.communicate()
-        print "{0}".format(output)
-
     def command_init(self, args=None):
         """Initial setup for IC4A"""
+        IC4AUtils = ic4autils.IC4AUtils()
+
         print "Creating initial folder if not exists: {0}".format(self.home_appdir)
-        self.os_create_directory(self.home_appdir)
+        IC4AUtils.os_create_directory(self.home_appdir)
         for dir in self.home_workspace_dirs:
             appdir = os.path.join(self.home_appdir, dir)
-            self.os_create_directory(appdir)
+            IC4AUtils.os_create_directory(appdir)
 
         print "Running script for installing boilr"
         print "Script:"
         print "  {0}".format(self.ic4a_scripts['jobs']['ic4a_init_shell_boilr_install'])
         print ""
-        self.os_run_command(self.ic4a_scripts['jobs']['ic4a_init_shell_boilr_install'])
+        IC4AUtils.os_run_command(self.ic4a_scripts['jobs']['ic4a_init_shell_boilr_install'])
 
     def command_exit(self, args=None):
         """Exit from application"""
