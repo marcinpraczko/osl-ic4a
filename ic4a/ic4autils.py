@@ -28,7 +28,13 @@ class IC4AUtils(object):
                 raise
 
     # TODO: From some reason return from wget is display faster then message about download (run init to see)
+    # NOTE: Colours are not displayed as well
     def os_run_command(self, command):
+        """Run command - use popen function"""
         p = subprocess.Popen(command, stdout=subprocess.PIPE, shell=True)
         (output, err) = p.communicate()
         print "{0}".format(output)
+
+    def os_system(self, command):
+        """Run command - using system function"""
+        os.system(command)
