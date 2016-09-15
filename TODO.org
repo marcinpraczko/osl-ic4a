@@ -1,15 +1,41 @@
+* Configuration for this ORG mode file                             :noexport:
+
+
+#+TITLE:      Basic TODO list for IC4A
+#+AUTHOR:     Marcin Praczko
+#+EMAIL:      marcin.praczko at gmail.com
+#+LANGUAGE:   en
+#+OPTIONS:    H:3 num:t toc:t \n:nil @:t ::t |:t ^:nil -:t f:t *:t <:t
+#+OPTIONS:    TeX:t LaTeX:nil skip:nil d:nil todo:t pri:nil tags:not-in-toc
+#+INFOJS_OPT: view:nil toc:nil ltoc:t mouse:underline buttons:0 path:http://orgmode.org/org-info.js
+
+#+EXPORT_SELECT_TAGS:  export
+#+EXPORT_EXCLUDE_TAGS: noexport
+
+#+TODO: TODO(t) NEXT(n) WIP(i!) WAIT(w@/!) | DONE(d!)
+
 * Version 0.1.1 (Unreleased)
 ** Add logger functions
 
 * Version 0.1.0 (Unreleased)
-** TODO Add requirements.txt
-** TODO Add README.rst
-   - [ ] Add details how to setup virtualenv
+** TODO Run spell checker against files and comments
+   - [ ] README.rst
+   - [ ] Python comments
+** DONE Add python_requirements.txt
+   - State "DONE"       from "TODO"       [2016-09-14 Wed 09:32]
+     So far is empty - but can be updated with command
+
+     pip freeze > python_requirements.txt
+
+** WIP [50%] [1/2] Add README.rst
+   - State "WIP"        from "TODO"       [2016-09-14 Wed 09:33]
+   - [X] Add details how to setup virtualenv
    - [ ] Add details how to setup virtualenv in PyCharm
 ** TODO Add 'init' target
 *** DONE Create folder in HOME
-*** TODO Create basic shell script (and run)
-    - [ ] Download boilr for templates
+*** WIP [50%] [1/2] Create basic shell script (and run)
+    - State "WIP"        from ""           [2016-09-14 Wed 09:03]
+    - [X] Download boilr for templates
     - [ ] Download ansible
 ** DONE Add interactive initial shell
 ** DONE Add Banners (Like DAC)
@@ -28,8 +54,26 @@
    - Unitest - python
 ** Sort ic4a.py with proper name/strucutre (like ansible as example)
 
+
 * Consider to use
 
 ** Python modules
    - [[https://github.com/neithere/argh][Additional module for argparse]]
      NOTE: Looks like so far I've done what is expected in normal argparse module.
+
+* Issues to solve
+** Proper arguments parsernig based on list of arguments
+
+So far this looks like this when run more arguments in commnads line.
+
+
+#+BEGIN_SRC bash
+  ./ic4a.py template boilr
+
+  usage: ./ic4a.py [options] <command> [<args>]
+  ./ic4a.py: error: unrecognized arguments: boilr
+#+END_SRC
+
+Hint:
+
+- Is worth to check routersploit implementation
