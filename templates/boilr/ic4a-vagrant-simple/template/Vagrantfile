@@ -1,0 +1,43 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+
+# -------------------------------------------------------------------
+# Generated with   : IC4A -> Boilr
+# Template version : 0.1.0
+
+# Links:
+#   - Main documentation: https://docs.vagrantup.com/v2/
+#   - Box search:         https://atlas.hashicorp.com/search
+# -------------------------------------------------------------------
+
+{{ if eq add_check_plugin_vagrant_vbguest "yes" }}
+unless Vagrant.has_plugin?("vagrant-vbguest")
+  raise 'vagrant-vbguest plugin is not installed!'
+end
+{{ end }}
+
+Vagrant.configure("2") do |config|
+{{ if eq add_check_plugin_vagrant_vbguest "yes" }}
+  # Plugin: vbguest: https://github.com/dotless-de/vagrant-vbguest
+  config.vbguest.auto_update = {{ vbguest_auto_update }}
+  config.vbguest.no_remote = {{ vbguest_no_remote }}
+{{ end }}
+
+  # Details about VM
+  config.vm.box = "{{ vm_box }}"
+
+  # config.vm.network "forwarded_port", guest: 80, host: 8080
+{{ if eq private_network "yes" }}
+  config.vm.network "private_network", ip: "192.168.31.10"
+{{ end }}
+
+  config.vm.provider "virtualbox" do |vb|
+{{ if eq vb_gui "yes" }}
+     # Display the VirtualBox GUI when booting the machine
+     vb.gui = true
+{{ end }}
+
+     # Customize the amount of memory on the VM:
+     vb.memory = "{{ vb_memory }}"
+   end
+end

@@ -1,0 +1,18 @@
+{
+    "vm_box": [
+      "centos/7",
+      "centos/6",
+      "ubuntu/trusty64",
+      "ubuntu/trusty32",
+      "ubuntu/precise64",
+      "ubuntu/precise32"
+    ],
+
+    "private_network": [ "yes", "no" ],
+    "vb_gui": [ "no", "yes" ],
+    "vb_memory": "1024",
+
+    "add_check_plugin_vagrant_vbguest": [ "yes", "no" ],
+    "vbguest_auto_update": [ "false", "true" ],
+    "vbguest_no_remote": [ "true", "false" ]
+}

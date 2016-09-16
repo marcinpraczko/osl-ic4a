@@ -140,7 +140,8 @@ class IC4A(object):
         templates_boilr = {
             # TODO: Make this dynamic based on sub-folders
             # NOTE: Do not use underscore - boilr is not like this for template TAG
-            'ic4atesttemplate': os.path.join(self.appdir, "..", "templates/boilr/ic4a-test-template")
+            'ic4atesttemplate': os.path.join(self.appdir, "..", "templates/boilr/ic4a-test-template"),
+            'ic4avagrantsimple': os.path.join(self.appdir, "..", "templates/boilr/ic4a-vagrant-simple")
         }
         return templates_boilr
 
