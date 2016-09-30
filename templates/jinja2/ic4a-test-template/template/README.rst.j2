@@ -1,0 +1,14 @@
+{%- set title_length = title | length -%}
+
+.. Generated with: {{ generator }}
+   Generator version: {{ generator_version }}
+
+.. Link to RST directives
+   http://docutils.sourceforge.net/docs/ref/rst/restructuredtext.html
+
+{% block title %}
+{{ title }}
+{{ "=" * title_length }}
+{%- endblock %}
+
+Please add description here.

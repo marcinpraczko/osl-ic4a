@@ -9,6 +9,8 @@ import sys
 import argparse
 import textwrap
 
+from jinja2 import Environment, FileSystemLoader
+
 # IC4A modules
 import ic4autils
 
@@ -29,10 +31,11 @@ class IC4A(object):
         self.console_prompt = "ic4a_console> "
 
         # TODO: Make sure that valid path is implemented when code is running from python package
-        # TODO: On OSX seems that absolute path = relative
-        self.appdir = os.path.dirname(__file__)
+        # INFO: On OSX seems that absolute path = relative
+        self.appdir = os.path.dirname(os.path.realpath(__file__))
         self.ic4a_scripts = self.__ic4a_scripts__()
         self.ic4a_templates_boilr = self.__ic4a_templates_boilr__()
+        self.ic4a_templates_jinja2 = self.__ic4a_templates_jinja2__()
 
         self.homedir = os.path.expanduser("~")
         self.home_appdir = os.path.join(self.homedir, ".{0}".format(self.APPNAME))
@@ -66,6 +69,11 @@ class IC4A(object):
                 'help': '(To Be Develop) Generate files based on templates',
                 'run': self.command_template
             },
+            'cmd_template_jinja2_tmp': {
+                'cmd': 'template_jinja2',
+                'help': '(WIP: Under development) Initial basic test Jinja2',
+                'run': self.command_template_jinja2_test
+            }
         }
         self.parser_main = argparse.ArgumentParser(
             prog=progname,
@@ -145,6 +153,14 @@ class IC4A(object):
         }
         return templates_boilr
 
+    def __ic4a_templates_jinja2__(self):
+        """Directories with templates for Jinja2"""
+        templates_jinja2 = {
+            # TODO: Make this dynamic based on sub-folders
+            'ic4a-test-template': os.path.join(self.appdir, "..", "templates/jinja2/ic4a-test-template")
+        }
+        return templates_jinja2
+
     def command_help(self, args=None):
         """Display help"""
         print self.format_main_commands_short_help()
@@ -198,6 +214,34 @@ class IC4A(object):
         """
         # TODO: Add some smart commands here - so far this is basic PoC (Maybe submodule for argparse)
         print "TODO: Add interpreter here and commands to run (as submodule with argparse)"
+
+    def command_template_jinja2_test(self, args=None):
+        """Basic method for command related with testing jinja2 templating"""
+
+        # TODO: Adjust this method to read files and replace with variables (from YAML file)
+        template_dir = os.path.join(self.ic4a_templates_jinja2['ic4a-test-template'], "template")
+        template_env = Environment(autoescape=False, loader=FileSystemLoader(template_dir))
+
+        # TODO: Hardcoded so far - will be replaced with dynamic list of files later
+        template_file = "README.rst.j2"
+        # NOTE: variables should be different per template - based on YAML file
+        template_variables = {
+            'title': 'Testing 01 - Description',
+            'generator': 'Boilr (IC4A)',
+            'generator_version': '0.1.0',
+        }
+
+        context_from_template = template_env.get_template(template_file).render(template_variables)
+
+        # TODO: Temporary - to del later
+        print "{0}".format(context_from_template)
+        print ""
+
+        # TODO: Save file (Move this code to somewhere else)
+        file2save = "README-test-jina2.rst"
+        print "Save file to: {0}".format(file2save)
+        with open(file2save, 'w') as f:
+            f.write(context_from_template)
 
     def run_commands(self, args=None):
         """
