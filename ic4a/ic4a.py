@@ -8,10 +8,10 @@ IC4A - Quick console for automation (from different subjects)
 """
 
 import sys
-import ic4amain
+import ic4amainapp
 
 if __name__ == '__main__':
-    IC4A = ic4amain.IC4A(sys.argv[0])
+    IC4A = ic4amainapp.IC4A(sys.argv[0])
 
     if len(sys.argv) > 1:
         IC4A.non_interactive()
