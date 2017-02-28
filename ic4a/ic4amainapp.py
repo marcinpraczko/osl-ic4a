@@ -6,13 +6,12 @@ This is main module for IC4A
 
 import os
 import sys
-import argparse
-import textwrap
+import importlib
 
 # IC4A modules
 import ic4autils
 
-# TODO: Add help for commands - is not suppored yet
+# TODO: Add help for commands - is not supported yet
 #       Example ic4a.py command -h
 
 class IC4A(object):
@@ -22,6 +21,8 @@ class IC4A(object):
 
     def __init__(self, progname):
         self.APPNAME = "ic4a"
+        self.progname = progname
+        self.active_module = None
 
         self.interactive_mode = False
         self.version = "0.1"
@@ -38,9 +39,10 @@ class IC4A(object):
         self.home_appdir = os.path.join(self.homedir, ".{0}".format(self.APPNAME))
         self.home_bindir = os.path.join(self.homedir, "bin")
         self.home_workspace_dirs = self.__home_appdirs__()
-        self.parser_main = None
+        self.arguments_parser = None
         # NOTE: http://programmers.stackexchange.com/questions/182093/why-store-a-function-inside-a-python-dictionary
         # NOTE: http://stackoverflow.com/questions/9168340/python-using-a-dictionary-to-select-function-to-execute
+        # TODO: This commands should be taken from modules folder - just option to consider
         self.main_commands = {
             'cmd_help': {
                 'cmd': 'help',
@@ -65,12 +67,22 @@ class IC4A(object):
             'cmd_template': {
                 'cmd': 'template',
                 'help': '(To Be Develop) Generate files based on templates',
-                'run': self.command_template
+                'run': self.command_template,
+                'module_name': 'ic4amodule_template',
+                'module_class': 'Ic4aModuleTemplate',
             },
         }
 
+    def __import_module__(self, module_name, class_name):
+        """Import dynamically module from 'modules' dir"""
+        # TODO: Add 'try / expect'
+        module = importlib.import_module('modules.{0}'.format(module_name))
+        loaded_class = getattr(module, class_name)
+        # TODO: Loaded module is using progname / add module name?
+        self.active_module = loaded_class(self.progname)
+        self.arguments_parser = self.active_module.argparser()
+
     def argparser(self):
-        """Default method for ArgParser"""
         pass
 
     def banner(self):
@@ -182,16 +194,12 @@ class IC4A(object):
         sys.exit(0)
 
     def command_template(self, args=None):
-        """Run template commands
-
-        syntax:
-          template <tool> <tool_cmds>
-
-        example:
-          template boilr init
-        """
-        # TODO: Add some smart commands here - so far this is basic PoC (Maybe submodule for argparse)
-        print "TODO: Add interpreter here and commands to run (as submodule with argparse)"
+        """Run template module"""
+        module_name = self.main_commands['cmd_template']['module_name']
+        module_class = self.main_commands['cmd_template']['module_class']
+        self.__import_module__(module_name, module_class)
+        if args.module_help:
+            self.arguments_parser.print_help()
 
     def run_commands(self, args=None):
         """
@@ -202,16 +210,14 @@ class IC4A(object):
         if self.interactive_mode:
             command = args[0]
         else:
-            command = args.main_command
+            command = args.command
 
         command_exists = False
         for key, value in self.main_commands.iteritems():
             if command == value['cmd']:
                 command_exists = True
                 if value['run']:
-                    # TODO: Add passing arguments here for commands
-                    # NOTE: run function from dict with arguments (so far no ARGS: None)
-                    value['run'](None)
+                    value['run'](args)
                 else:
                     msg = "[{0}]: {1}".format(value['cmd'], value['help'])
                     print "Only INFO: {0}".format(msg)
@@ -227,10 +233,7 @@ class IC4A(object):
         Parse arguments with subcommands
         Taken from examples: http://stackoverflow.com/questions/6394328/only-one-command-line-option-with-argparse
         """
-
-        # NOTE: Have multi commands options - like: git <cmd>, vagrant <cmd>
-        self.parser_main.add_argument('main_command', help=argparse.SUPPRESS)
-        args = self.parser_main.parse_args()
+        args = self.argparser()
         self.run_commands(args)
 
     def read_user_commands(self):
