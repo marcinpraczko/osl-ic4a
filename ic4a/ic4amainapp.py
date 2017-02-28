@@ -38,6 +38,7 @@ class IC4A(object):
         self.home_appdir = os.path.join(self.homedir, ".{0}".format(self.APPNAME))
         self.home_bindir = os.path.join(self.homedir, "bin")
         self.home_workspace_dirs = self.__home_appdirs__()
+        self.parser_main = None
         # NOTE: http://programmers.stackexchange.com/questions/182093/why-store-a-function-inside-a-python-dictionary
         # NOTE: http://stackoverflow.com/questions/9168340/python-using-a-dictionary-to-select-function-to-execute
         self.main_commands = {
@@ -67,17 +68,10 @@ class IC4A(object):
                 'run': self.command_template
             },
         }
-        self.parser_main = argparse.ArgumentParser(
-            prog=progname,
-            formatter_class=argparse.RawDescriptionHelpFormatter,
-            usage='%(prog)s [options] <command> [<args>]',
-            epilog=textwrap.dedent(
-                '''For help on any individual command run `%(prog)s COMMAND -h`'''
-            ),
-            description=textwrap.dedent(
-                self.format_main_commands_short_help()
-            )
-        )
+
+    def argparser(self):
+        """Default method for ArgParser"""
+        pass
 
     def banner(self):
         """
