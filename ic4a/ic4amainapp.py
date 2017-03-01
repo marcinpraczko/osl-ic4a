@@ -40,6 +40,15 @@ class IC4A(object):
         self.home_bindir = os.path.join(self.homedir, "bin")
         self.home_workspace_dirs = self.__home_appdirs__()
         self.arguments_parser = None
+
+        # NOTE: Load dynamically 'Main module' only from this module
+        #       do not following code from inherited classes
+        if self.__module__ == 'ic4amainapp':
+            # print ""
+            # print "DEBUG: TODEL: Module Name: {0}".format(self.__module__)
+            # print ""
+            self.__import_main_module__()
+
         # NOTE: http://programmers.stackexchange.com/questions/182093/why-store-a-function-inside-a-python-dictionary
         # NOTE: http://stackoverflow.com/questions/9168340/python-using-a-dictionary-to-select-function-to-execute
         # TODO: This commands should be taken from modules folder - just option to consider
@@ -73,17 +82,22 @@ class IC4A(object):
             },
         }
 
+    def __import_main_module__(self):
+        module_name = 'ic4amodule_main'
+        class_module = 'IC4AModuleMain'
+        self.__import_module__(module_name, class_module)
+
     def __import_module__(self, module_name, class_name):
         """Import dynamically module from 'modules' dir"""
-        # TODO: Add 'try / expect'
-        module = importlib.import_module('modules.{0}'.format(module_name))
-        loaded_class = getattr(module, class_name)
-        # TODO: Loaded module is using progname / add module name?
-        self.active_module = loaded_class(self.progname)
-        self.arguments_parser = self.active_module.argparser()
-
-    def argparser(self):
-        pass
+        try:
+            module = importlib.import_module('modules.{0}'.format(module_name))
+            loaded_class = getattr(module, class_name)
+            # TODO: Loaded module is using progname / add module name to change prompt?
+            self.active_module = loaded_class(self.progname)
+            self.arguments_parser = self.active_module.create_parser()
+        except Exception as e:
+            print "ERROR: {0}".format(e.message)
+            sys.exit(2)
 
     def banner(self):
         """
@@ -112,20 +126,6 @@ class IC4A(object):
         print ""
         print ""
 
-    def format_main_commands_short_help(self):
-        """Format main commands short help"""
-        help_info = ""
-        if not self.interactive_mode:
-            help_info += "IC4A - Interactive Console For Automation\n\n"
-        help_info += "Common commands:\n"
-        for key, value in self.main_commands.iteritems():
-            # Do not display help when
-            if not self.interactive_mode and key in [ 'cmd_help', 'cmd_exit']:
-                continue
-            help_info += "  {0:<14}    {1:}\n".format(value['cmd'], value['help'])
-        help_info += "\n"
-        return help_info
-
     def __home_appdirs__(self):
         """Directories which will be created in IC4A config folder"""
         dirs = [ 'download', 'tmp' ]
@@ -152,8 +152,9 @@ class IC4A(object):
         return templates_boilr
 
     def command_help(self, args=None):
-        """Display help"""
-        print self.format_main_commands_short_help()
+        """Display help from active (imported) module"""
+        help_details = self.active_module.format_commands_short_help()
+        print help_details
 
     def command_init(self, args=None):
         """Initial setup for IC4A"""
@@ -229,11 +230,11 @@ class IC4A(object):
             sys.exit(2)
 
     def parse_cmdline_arguments(self):
-        """
-        Parse arguments with subcommands
-        Taken from examples: http://stackoverflow.com/questions/6394328/only-one-command-line-option-with-argparse
-        """
-        args = self.argparser()
+        """Parse arguments from module"""
+        # TODO: Add error message if active_module is not valid
+        args = None
+        if self.active_module:
+            args = self.active_module.parse_cmdline_arguments(self.arguments_parser)
         self.run_commands(args)
 
     def read_user_commands(self):

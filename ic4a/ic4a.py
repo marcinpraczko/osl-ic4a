@@ -10,11 +10,10 @@ IC4A - Quick console for automation (from different subjects)
 # TODO: Fix Not interactive
 
 import sys
-# import ic4amainapp
-import ic4amodule_main
+import ic4amainapp
 
 if __name__ == '__main__':
-    IC4A = ic4amodule_main.IC4AModuleMain(sys.argv[0])
+    IC4A = ic4amainapp.IC4A(sys.argv[0])
 
     if len(sys.argv) > 1:
         IC4A.non_interactive()
