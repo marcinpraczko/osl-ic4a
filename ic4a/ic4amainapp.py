@@ -99,33 +99,6 @@ class IC4A(object):
             print "ERROR: {0}".format(e.message)
             sys.exit(2)
 
-    def banner(self):
-        """
-        Generated with http://patorjk.com/software/taag/#p=display&f=Big&t=IC4A
-        Plus my own modification (Add spaced between characters)
-        """
-        nice_banner = r"""
-============================================================
-
-  --==<< OSSL (Open Source Solutions Lab) >>==--
-       ______     _____    _  _
-      |_   _/    / ____|  | || |       /\
-        | |     | |       | || |__    /  \
-        | |     | |       |__   _/   / /\ \
-       _| |_    | |____      | |    / /__\ \
-      |_____\    \_____|     |_/   /_/    \_\
-    Interactive  Console    For    Automation
-
-============================================================
-"""
-        print nice_banner
-        print ""
-        print "Version: {0}".format(self.release)
-        print ""
-        print "[*] Write 'help' for more details"
-        print ""
-        print ""
-
     def __home_appdirs__(self):
         """Directories which will be created in IC4A config folder"""
         dirs = [ 'download', 'tmp' ]
@@ -150,6 +123,33 @@ class IC4A(object):
             'ic4avagrantsimple': os.path.join(self.appdir, "..", "templates/boilr/ic4a-vagrant-simple")
         }
         return templates_boilr
+
+    def banner(self):
+        """
+        Generated with http://patorjk.com/software/taag/#p=display&f=Big&t=IC4A
+        Plus my own modification (Add spaced between characters)
+        """
+        nice_banner = r"""
+============================================================
+
+      --==<< OSL (Open Solutions Lab) >>==--
+       ______     _____    _  _
+      |_   _/    / ____|  | || |       /\
+        | |     | |       | || |__    /  \
+        | |     | |       |__   _/   / /\ \
+       _| |_    | |____      | |    / /__\ \
+      |_____\    \_____|     |_/   /_/    \_\
+    Interactive  Console    For    Automation
+
+============================================================
+"""
+        print nice_banner
+        print ""
+        print "Version: {0}".format(self.release)
+        print ""
+        print "[*] Write 'help' for more details"
+        print ""
+        print ""
 
     def command_help(self, args=None):
         """Display help from active (imported) module"""
