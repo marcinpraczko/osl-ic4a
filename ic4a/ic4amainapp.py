@@ -235,6 +235,9 @@ class IC4A(object):
         args = None
         if self.active_module:
             args = self.active_module.parse_cmdline_arguments(self.arguments_parser)
+        print args
+        if args.command:
+            print "Detected command"
         self.run_commands(args)
 
     def read_user_commands(self):

@@ -8,15 +8,15 @@ import argparse
 import textwrap
 
 # IC4A modules
-from ic4amainapp import IC4A
+from ic4amodule_main import IC4AModuleMain
 
 
-class Ic4aModuleTemplate(IC4A):
+class Ic4aModuleTemplate(IC4AModuleMain):
     """
     Template Class module from IC4A
     """
 
-    def argparser(self):
+    def create_parser(self):
         """ArgParser for module: template"""
         parser = argparse.ArgumentParser(
             prog=self.progname,
@@ -27,8 +27,24 @@ class Ic4aModuleTemplate(IC4A):
             ),
             description="Description about template module",
         )
+        print ""
         print "DEBUG: HERE - Template"
         print ""
-        parser.add_argument('command')
-        parser.add_argument('-o')
+
+        parser.add_argument('-h', '--help',
+                            action='store_true', dest='module_help')
+        parser.add_argument('templ_command', help=argparse.SUPPRESS)
         return parser
+
+    def parse_cmdline_arguments(self, parser):
+        """
+        Parse command line arguments from provided parser
+
+        :param parser: argparse.ArgumentParser
+        :return: args: from parse_args()
+        """
+        args = parser.parse_args()
+        print "You are in template module"
+        # if args.module_help:
+        #     parser.print_help()
+        return args

@@ -38,9 +38,9 @@ class IC4AModuleMain(IC4A):
             ),
             add_help=False
         )
-        parser.add_argument('-h', '--help',
-                            action='store_true', dest='module_help')
-        parser.add_argument('command', help=argparse.SUPPRESS)
+        # parser.add_argument('-h', '--help',
+        #                     action='store_true', dest='module_help')
+        parser.add_argument('command')
         return parser
 
     def parse_cmdline_arguments(self, parser):
@@ -51,8 +51,8 @@ class IC4AModuleMain(IC4A):
         :return: args: from parse_args()
         """
         args = parser.parse_args()
-        if args.module_help:
-            parser.print_help()
+        # if args.module_help:
+        #     parser.print_help()
         return args
 
     def format_commands_short_help(self):
