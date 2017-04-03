@@ -6,9 +6,9 @@ This is main module for IC4A
 
 import os
 import sys
-import importlib
 
 # IC4A modules
+import cli
 import ic4autils
 
 # TODO: Add help for commands - is not supported yet
@@ -19,9 +19,8 @@ class IC4A(object):
     Main IC4A (Interactive Console For Automation)
     """
 
-    def __init__(self, progname):
+    def __init__(self):
         self.APPNAME = "ic4a"
-        self.progname = progname
         self.active_module = None
 
         self.interactive_mode = False
@@ -82,22 +81,24 @@ class IC4A(object):
             },
         }
 
-    def __import_main_module__(self):
-        module_name = 'ic4amodule_main'
-        class_module = 'IC4AModuleMain'
-        self.__import_module__(module_name, class_module)
+    # TODO: Disabled this - seems be no longer required
+    # def __import_main_module__(self):
+    #     module_name = 'ic4amodule_main'
+    #     class_module = 'IC4AModuleMain'
+    #     self.__import_module__(module_name, class_module)
 
-    def __import_module__(self, module_name, class_name):
-        """Import dynamically module from 'modules' dir"""
-        try:
-            module = importlib.import_module('modules.{0}'.format(module_name))
-            loaded_class = getattr(module, class_name)
-            # TODO: Loaded module is using progname / add module name to change prompt?
-            self.active_module = loaded_class(self.progname)
-            self.arguments_parser = self.active_module.create_parser()
-        except Exception as e:
-            print "ERROR: {0}".format(e.message)
-            sys.exit(2)
+    # TODO: Disabled this - seems be no longer required
+    # def __import_module__(self, module_name, class_name):
+    #     """Import dynamically module from 'modules' dir"""
+    #     try:
+    #         module = importlib.import_module('modules.{0}'.format(module_name))
+    #         loaded_class = getattr(module, class_name)
+    #         # TODO: Loaded module is using progname / add module name to change prompt?
+    #         self.active_module = loaded_class(self.progname)
+    #         self.arguments_parser = self.active_module.create_parser()
+    #     except Exception as e:
+    #         print "ERROR: {0}".format(e.message)
+    #         sys.exit(2)
 
     def __home_appdirs__(self):
         """Directories which will be created in IC4A config folder"""
@@ -153,8 +154,10 @@ class IC4A(object):
 
     def command_help(self, args=None):
         """Display help from active (imported) module"""
-        help_details = self.active_module.format_commands_short_help()
-        print help_details
+        # TODO: Disabled this - seems be no longer required
+        # help_details = self.active_module.format_commands_short_help()
+        # print help_details
+        pass
 
     def command_init(self, args=None):
         """Initial setup for IC4A"""
@@ -166,27 +169,6 @@ class IC4A(object):
             appdir = os.path.join(self.home_appdir, dir)
             IC4AUtils.os_create_directory(appdir)
 
-        print "Running script for installing boilr"
-        print "Script:"
-        print "  {0}".format(self.ic4a_scripts['jobs']['ic4a_init_shell_boilr_install'])
-        print ""
-        IC4AUtils.os_system(self.ic4a_scripts['jobs']['ic4a_init_shell_boilr_install'])
-
-        # TODO: Make this as separate method (and list of commands to run as a list)
-        # NOTE: Run command - boilr to install template
-        for name, path in self.ic4a_templates_boilr.iteritems():
-            cmd_boilr = "{0} template save {1} {2}".format(
-                os.path.join(self.home_bindir, 'boilr'), path, name)
-            print "Running commnad:"
-            print "  {0}".format(cmd_boilr)
-            IC4AUtils.os_system(cmd_boilr)
-
-        # NOTE: Run command - display templates
-        print ""
-        print "List of imported templates"
-        cmd_boilr = "{0} template list".format(os.path.join(self.home_bindir, 'boilr'))
-        IC4AUtils.os_system(cmd_boilr)
-
     def command_exit(self, args=None):
         """Exit from application"""
         if self.interactive_mode:
@@ -196,11 +178,7 @@ class IC4A(object):
 
     def command_template(self, args=None):
         """Run template module"""
-        module_name = self.main_commands['cmd_template']['module_name']
-        module_class = self.main_commands['cmd_template']['module_class']
-        self.__import_module__(module_name, module_class)
-        if args.module_help:
-            self.arguments_parser.print_help()
+        print "In template module"
 
     def run_commands(self, args=None):
         """
@@ -263,5 +241,4 @@ class IC4A(object):
 
     def non_interactive(self):
         """Not interactive session"""
-
-        self.parse_cmdline_arguments()
+        cli.main()
