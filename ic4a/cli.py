@@ -5,7 +5,6 @@ This module should be used for CLI commands
 
 """
 
-# TODO: Add to doc: pip install --editable .
 # TODO: So far based on molecule code
 # - https://github.com/metacloud/molecule/blob/master/molecule/cli.py
 

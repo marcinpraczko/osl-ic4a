@@ -2,7 +2,7 @@
 IC4A - Main details
 ===================
 
-``IC4A`` - stands for **Interactive Console 4 Automation**.
+``IC4A`` - stands for **Interactive Console For Automation**.
 
 Writing this tool was caused by having more and more challenges related with repeating quickly tasks
 which I am doing every day (Searching for files, creating templates for scripts, analysing scripts,
@@ -38,6 +38,7 @@ Clone this project from ``GitHub``
   git clone https://github.com/marcinpraczko/osl-ic4a.git
   cd ic4a
 
+
 **Python Virtual Environment**
 
 The best is working with ``python-virtualenv`` tool which allow create separate environment for
@@ -59,17 +60,34 @@ with all dependencies just by removing folder with project.
   cd venv
 
   # Update standard packages
-  pip install --upgrade pip
-  pip install --upgrade setuptools
+  pip install --upgrade pip setuptools wheel
 
 * Once this is done, run following commands to install all required dependencies.
 
 .. code-block:: bash
 
-  pip install -r python_requirements.txt
+  pip install -r requirements.txt
+
+
+**Run IC4A in Virtual Environment**
+
+The fastest way of running ``ic4a`` is add it to python virtual environment
+
+.. code-block:: bash
+
+  pip install --editable .
+
+Once this is done ``ic4a`` can be run via command:
+
+.. code-block:: bash
+
+  # Running command without any argument will display help
+  ic4a
+
+
+**Deactivate Virtual Environment**
 
 * When work is done - ``python-virtual`` environment should be deactivate with command:
-
 
 .. code-block:: bash
 
