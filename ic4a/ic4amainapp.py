@@ -155,7 +155,7 @@ class IC4A(object):
     def command_help(self, args=None):
         """Display help from active (imported) module"""
         print "TODO: Add help for Console CLI"
-        pass
+        pass    
 
     def command_init(self, args=None):
         """Initial setup for IC4A"""
