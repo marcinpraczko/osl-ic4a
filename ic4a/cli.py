@@ -34,5 +34,6 @@ def main():
     """ Ic4a ... UPDATE ME"""
     cli(obj={})
 
+cli.add_command(command.console.console)
 cli.add_command(command.init.init)
 cli.add_command(command.template.template)

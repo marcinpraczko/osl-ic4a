@@ -154,9 +154,7 @@ class IC4A(object):
 
     def command_help(self, args=None):
         """Display help from active (imported) module"""
-        # TODO: Disabled this - seems be no longer required
-        # help_details = self.active_module.format_commands_short_help()
-        # print help_details
+        print "TODO: Add help for Console CLI"
         pass
 
     def command_init(self, args=None):
